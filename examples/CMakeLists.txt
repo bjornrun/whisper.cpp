@@ -18,6 +18,18 @@ if (WHISPER_CLBLAST)
     find_package(CLBlast REQUIRED)
 endif()
 
+# Add GStreamer check
+if (WHISPER_GSTREAMER)
+    find_package(PkgConfig REQUIRED)
+    pkg_check_modules(GST REQUIRED 
+        gstreamer-1.0
+        gstreamer-base-1.0
+        gstreamer-audio-1.0
+    )
+    message(STATUS "GStreamer include dirs: ${GST_INCLUDE_DIRS}")
+    message(STATUS "GStreamer libraries: ${GST_LIBRARIES}")
+endif()
+
 # common
 
 set(TARGET common)
@@ -116,6 +128,10 @@ else()
             add_subdirectory(sycl)
         endif()
     endif (WHISPER_SDL2)
+
+    if (WHISPER_GSTREAMER)
+        add_subdirectory(gst-stream)
+    endif()
 
     add_subdirectory(deprecation-warning)
 endif()
